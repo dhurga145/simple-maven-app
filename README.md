@@ -1,333 +1,312 @@
+# 🚀 Jenkins CI Pipeline using Git and Maven (Complete Guide)
 
+---
 
-#  Jenkins – Docker – Kubernetes CI/CD Demo
+## 📌 Project Overview
 
-##  Overview
+This project demonstrates a **Continuous Integration (CI) Pipeline** using:
 
-This project demonstrates a complete **CI/CD pipeline** using:
+* Git (Version Control)
+* Maven (Build Tool)
+* Jenkins (Automation Server)
 
+The pipeline:
+✔ Clones code from GitHub
+✔ Builds using Maven
+✔ Runs JUnit tests
+✔ Reports success/failure
+
+---
+
+## 🛠️ Tech Stack
+
+* Java
+* Maven
 * Jenkins
-* Docker
-* Kubernetes
-
-The pipeline automates:
-
-* Building a Java application
-* Creating a Docker image
-* Pushing it to Docker Hub
-* Deploying it to Kubernetes
+* GitHub
+* JUnit
 
 ---
 
-#  Prerequisites
-
-* Install Docker Desktop
-* Install Java (JDK 17)
-* Install Maven
-* Install Jenkins
-
----
-
-#  Step 1: Install Docker Desktop
-
-Download and install Docker Desktop from the official website.
-
----
-
-#  Step 2: Enable Kubernetes in Docker
-
-1. Open Docker Desktop
-2. Go to **Settings **
-3. Select **Kubernetes tab**
-4. Enable **Kubernetes**
-5. Click **Apply & Restart**
-
- This creates a **single-node Kubernetes cluster**
-
----
-
-#  Step 3: Install Jenkins Plugins
-
-In Jenkins:
-
-* Install **Docker Plugin**
-* Install **Docker Pipeline Plugin**
-
----
-
-#  Step 4: Create Java Application
-
-###  Project Folder
+## 📁 Project Structure (Maven Standard)
 
 ```
-simple-java-app
+simple-maven-app/
+├── pom.xml
+└── src/
+    ├── main/java/com/example/App.java
+    └── test/java/com/example/AppTest.java
 ```
 
-###  App.java
+---
+
+## ⚙️ STEP 1: Create Maven Project
+
+Project Name:
+
+```
+simple-maven-app
+```
+
+---
+
+## 💻 STEP 2: App.java (Main Application)
+
+📍 Path:
+
+```
+src/main/java/com/example/App.java
+```
 
 ```java
+package com.example;
+
 public class App {
- public static void main(String[] args) throws Exception {
-  System.out.println("Java CI/CD Application Started...");
-  while (true) {
-   Thread.sleep(5000);
-   System.out.println("Hello from Java CI/CD Pipeline!");
-  }
- }
+    public int add(int a, int b) {
+        return a + b;
+    }
 }
 ```
 
-###  pom.xml
+### 🔍 Explanation
+
+* Contains business logic
+* `add()` method returns sum
+
+---
+
+## 🧪 STEP 3: AppTest.java (JUnit Test)
+
+📍 Path:
+
+```
+src/test/java/com/example/AppTest.java
+```
+
+```java
+package com.example;
+
+import org.junit.Test;
+import static org.junit.Assert.*;
+
+public class AppTest {
+
+    @Test
+    public void testAdd() {
+        App app = new App();
+        assertEquals(5, app.add(2, 3));
+    }
+}
+```
+
+### 🔍 Explanation
+
+* `@Test` marks test method
+* `assertEquals` validates output
+* Test failure → build failure
+
+---
+
+## 📄 STEP 4: pom.xml
+
+📍 Path:
+
+```
+simple-maven-app/pom.xml
+```
 
 ```xml
 <project xmlns="http://maven.apache.org/POM/4.0.0"
- xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
- http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://www.w3.org/xsd/maven-4.0.0.xsd">
 
- <modelVersion>4.0.0</modelVersion>
- <groupId>com.demo</groupId>
- <artifactId>simple-java-app</artifactId>
- <version>1.0</version>
+    <modelVersion>4.0.0</modelVersion>
 
- <build>
-  <plugins>
-   <plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-compiler-plugin</artifactId>
-    <version>3.10.1</version>
-    <configuration>
-     <source>17</source>
-     <target>17</target>
-    </configuration>
-   </plugin>
-  </plugins>
- </build>
+    <groupId>com.example</groupId>
+    <artifactId>simple-maven-app</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
 </project>
 ```
 
+### 🔍 Explanation
+
+* Defines project configuration
+* Adds JUnit dependency for testing
+
 ---
 
-#  Step 5: Build Locally
+## 🧪 STEP 5: Test Locally
 
 ```bash
-mvn clean package
+mvn clean test
 ```
 
- Output:
+### ✅ Expected Output
 
 ```
-target/simple-java-app-1.0.jar
-```
-
----
-
-#  Step 6: Create Dockerfile
-
-```dockerfile
-FROM eclipse-temurin:17-jdk
-WORKDIR /app
-COPY target/simple-java-app-1.0.jar app.jar
-CMD ["java", "-jar", "app.jar"]
+BUILD SUCCESS
 ```
 
 ---
 
-#  Step 7: Push Code to GitHub
+## 📤 STEP 6: Push to GitHub
 
 ```bash
 git init
 git add .
-git commit -m "Initial Java CI/CD commit"
+git commit -m "Initial Maven project with JUnit test"
 git branch -M main
-git remote add origin https://github.com/your-reponame/simple-java-app.git
+git remote add origin <your-repository-url>
 git push -u origin main
 ```
 
 ---
 
-#  Step 8: Kubernetes Deployment
+## ⚙️ STEP 7: Install Maven (Windows)
 
-###  deployment.yaml
+1. Download: apache-maven-3.9.12-bin.zip
+2. Extract to:
 
-```yaml
-apiVersion: apps/v1
-kind: Deployment
-metadata:
- name: java-app
-
-spec:
- replicas: 2
- selector:
-  matchLabels:
-   app: java-app
-
- template:
-  metadata:
-   labels:
-    app: java-app
-  spec:
-   containers:
-   - name: java-app
-     image: <dockerhub-username>/java-app:latest
----
-apiVersion: v1
-kind: Service
-metadata:
- name: java-service
-
-spec:
- type: NodePort
- selector:
-  app: java-app
- ports:
- - port: 80
-   targetPort: 8080
-   nodePort: 30008
+```
+C:\Program Files\Apache\apache-maven-3.9.12
 ```
 
-Push it:
+3. Set Environment Variable:
+
+```
+MAVEN_HOME = C:\Program Files\Apache\apache-maven-3.9.12
+```
+
+4. Add to PATH:
+
+```
+%MAVEN_HOME%\bin
+```
+
+5. Verify:
 
 ```bash
-git add deployment.yaml
-git commit -m "Added Kubernetes deployment file"
-git push
+mvn -version
 ```
 
 ---
 
-#  Step 9: Configure Jenkins
+## ⚙️ STEP 8: Configure Maven in Jenkins
 
-* Run Jenkins
-* Install **Kubernetes CLI Plugin**
+📍 Path:
 
----
+```
+Manage Jenkins → Tools → Maven Installations
+```
 
-#  Step 10: Add DockerHub Credentials
+### Configuration:
 
-In Jenkins:
-
-**Manage Jenkins → Manage Credentials → Global → Add Credentials**
-
-| Field    | Value                  |
-| -------- | ---------------------- |
-| Kind     | Username with password |
-| Username | DockerHub username     |
-| Password | DockerHub password     |
-| ID       | dockerhub-creds        |
+* Name: `M3`
+* MAVEN_HOME: `C:\Program Files\Apache\apache-maven-3.9.12`
+* Install Automatically: ❌ UNCHECK
 
 ---
 
-#  Step 11: Jenkins Pipeline
-
-###  Pipeline Script
+## 🔄 STEP 9: Jenkins Pipeline Script
 
 ```groovy
 pipeline {
- agent any
+    agent any
 
- environment {
-  DOCKER_IMAGE = "yourdockerhubusername/java-app:latest"
- }
-
- stages {
-
-  stage('Clone Repository') {
-   steps {
-    git branch: 'main',
-    url: 'https://github.com/your-reponame/simple-java-app.git'
-   }
-  }
-
-  stage('Build with Maven') {
-   steps {
-    bat 'mvn clean package'
-   }
-  }
-
-  stage('Build Docker Image') {
-   steps {
-    bat "docker build -t %DOCKER_IMAGE% ."
-   }
-  }
-
-  stage('Push to DockerHub') {
-   steps {
-    withCredentials([usernamePassword(
-     credentialsId: 'dockerhub-creds',
-     usernameVariable: 'DOCKER_USER',
-     passwordVariable: 'DOCKER_PASS'
-    )]) {
-     bat """
-     docker login -u %DOCKER_USER% -p %DOCKER_PASS%
-     docker push %DOCKER_IMAGE%
-     """
+    tools {
+        maven 'M3'
     }
-   }
-  }
 
-  stage('Deploy to Kubernetes') {
-   steps {
-    bat 'kubectl apply -f deployment.yaml'
-   }
-  }
- }
+    stages {
 
- post {
-  success {
-   echo 'CI/CD Pipeline executed successfully!'
-  }
-  failure {
-   echo 'Pipeline failed. Please check logs.'
-  }
- }
+        stage('Checkout Git') {
+            steps {
+                git branch: 'main',
+                url: '<your-repository-url>'
+            }
+        }
+
+        stage('Build and Test') {
+            steps {
+                bat 'mvn clean test'
+            }
+        }
+    }
 }
 ```
 
 ---
 
-#  Step 12: Verify Deployment
+## ▶️ STEP 10: Run Jenkins Pipeline
 
-```bash
-kubectl get svc
-```
+### Steps:
 
-✔ Check running services
-✔ Access app via NodePort
+1. Save pipeline
+2. Click **Build Now**
+3. Open **Console Output**
 
 ---
 
-#  CI/CD Flow Summary
+## ✅ Expected Output
 
-## 🔹 Continuous Integration (CI)
+* Git repository cloned
+* Maven build executed
+* JUnit tests run
+* Output:
+
+```
+BUILD SUCCESS
+Finished: SUCCESS
+```
+
+---
+
+## 📊 CI Pipeline Flow
+
+### 🔹 Continuous Integration (CI)
 
 * Developer pushes code to GitHub
-* Jenkins pulls code
+* Jenkins clones repository
 * Maven builds project
-* Docker image is created
-
-## 🔹 Continuous Deployment (CD)
-
-* Image pushed to Docker Hub
-* Kubernetes pulls image
-* Pods are created and scaled
+* JUnit tests are executed
 
 ---
 
-#  Workflow Overview
+## 🔄 Workflow Summary
 
-```
-Developer → GitHub → Jenkins → Maven Build → Docker Build
-→ DockerHub → Kubernetes → Pods Running 
-```
+* Git → Version Control
+* Jenkins → Automation
+* Maven → Build Tool
+* JUnit → Testing
+
+---
+
+## 🎯 Key Features
+
+* Automated build process
+* Automatic testing
+* Early bug detection
+* Clean Maven structure
 
 ---
 
-#  Key Highlights
+## 🧠 Viva Answer (Short)
 
-✔ Automated pipeline
-✔ Scalable deployment (2 replicas)
-✔ Containerized Java application
-✔ End-to-end CI/CD workflow
+👉 “This project demonstrates a CI pipeline where Jenkins automatically fetches code from GitHub, builds it using Maven, runs JUnit tests, and reports build status.”
 
 ---
+
+## 👨‍💻 Author
+
+Your Name
